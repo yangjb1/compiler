@@ -73,7 +73,7 @@ struct token_t {
     union {
         char    stringVal[256];
         //int     intVal;
-        double  num;
+        //double  num;
     } val;
     int line;
     int column;
@@ -175,15 +175,32 @@ static int ScanOneToken( FILE *fp, token_t *token) {
 
         case '0': case '1': case '2': case '3': case '4': case '5': case '6':
         case '7': case '8': case '9':
-            token->type = T_NUM;
-            token->val.num = ch - '0';
+            token->val.stringVal[0] = ch;
+            i = 1;
             while (isdigit(ch = getc(fp))) {
-                token->val.num = token->val.num * 10 + ch -'0';
-            if (ch == '.') {
-                while(isdigit(ch = getc(fp)))
-                    token->val.num = token->val.num * 10 + ch -'0';
+                token->val.stringVal[i] = ch;
+                i++;
+            if (ch == '_') {
+                if ( nextch=getc(fp) == '.') {
+                    token->val.stringVal[i] = ch;
+                    token->val.stringVal[i++] = nextch;
+                    i++
+                    while(isdigit(ch = getc(fp)))
+                    {
+                        token->val.stringVal[i] = ch;
+                        i++;
+                    }
+                    if (ch=getc(fp) == '_')
+                        token->val.stringVal[i] = ch;
+                    ungetc(ch,fp);
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+                else {
+                    ungetc(nextch,fp);
             }
             ungetc(ch,fp);
+            token->type = T_NUM;
             return T_NUM;
 
 
