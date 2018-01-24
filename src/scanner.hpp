@@ -59,12 +59,16 @@
 #define T_INT           275
 #define T_DOUBLE        276
 */
-#define T_NUoM          275
+#define T_NUM           275
+#define T_CHAR          276
 #define T_STRING        277
 
 // unknow type
 #define T_UNKNOWN       278
 
+
+// TODO function isstringval(char ch);
+// TODO function ischar(char ch);
 
 FILE myfile(*file)
 
@@ -202,6 +206,38 @@ static int ScanOneToken( FILE *fp, token_t *token) {
             ungetc(ch,fp);
             token->type = T_NUM;
             return T_NUM;
+
+        /*    
+        case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
+        case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case "R':
+        case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+        case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
+        case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
+        case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
+        */
+       case '"':
+            token->type = T_STRING;
+            token->val.stringVal[0] = ch;
+            // TODO function isstringval(char ch);
+            for (i = 1; isstringval(ch = getc(fp)); i++)
+                token->val.stringVal[i] = ch;
+            if (ch == '"') {
+                token->val.stringVal[i+1] = ch;
+                token->val.stringVal[i+2] = '\0';
+            }
+            return T_STRING;
+
+       case ''':
+            token->type = T_CHAR;
+            token->val.stringVal[0] = ch;
+            // TODO function ischar(char ch);
+            for (i = 1; ischar(ch = getc(fp)); i++)
+                token->val.stringVal[i] = ch;
+            if (ch == ''') {
+                token->val.stringVal[i+1] = ch;
+                token->val.stringVal[i+2] = '\0';
+            }
+            return T_CHAR;
 
 
         case EOF:
