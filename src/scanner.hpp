@@ -207,6 +207,19 @@ static int ScanOneToken( FILE *fp, token_t *token) {
             token->type = T_NUM;
             return T_NUM;
 
+        case 'I': case 'i':
+            ch = getc(ch);
+            if (ch == 'f' || ch == 'F') { // if
+                token->type = T_IF;
+                return T_IF;
+            } else if (ch == 's' || ch = 'S') { // is
+                token->type = T_IS;
+                return T_IF;
+            } else if (ch == 'n' || ch == 'N') { // in...
+                ch = getc(ch);
+                if () 
+            }
+
         /*    
         case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
         case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case "R':
@@ -238,7 +251,6 @@ static int ScanOneToken( FILE *fp, token_t *token) {
                 token->val.stringVal[i+2] = '\0';
             }
             return T_CHAR;
-
 
         case EOF:
             return T_END;
