@@ -241,6 +241,144 @@ static int ScanOneToken( FILE *fp, token_t *token) {
             token->type = T_UNKNOWN;
             return T_UNKNOWN;
 
+        case 'C':
+            if (ch = getc(fp) == 'H') {
+                if (ch = getc(fp) == 'A') {
+                    if (ch = getc(fp) == 'R') {
+                        token->type = T_CHAR;
+                        return T_CHAR;
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "CHA";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "CH";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->val.stringVal = 'C';
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
+
+        case 'E':
+            ch = getc(fp);
+            if (ch == 'N') {
+                if (ch = getc(fp) == 'D') {
+                    token->type = T_END;
+                    return T_END;
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "EN";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            } else if (ch == 'L') {
+                if (ch = getc(fp) == 'S') {
+                    if( ch = getc(fp) == 'E') {
+                        token->type = T_ELSE;
+                        return T_ELSE;
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "ELS";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "EL";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->val.stringVal = "E";
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
+
+        case 'F':
+            ch = getc(fp);
+            if (ch == 'O') {
+                if (ch = getc(fp) == 'R') {
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "FO";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            } else if ( ch == 'A') {
+                if (ch = getc(fp) == 'L') {
+                    if (ch = getc(fp) == 'S') {
+                        if (ch = getc(fp) =='E') {
+                            token->type = T_UNKNOWN;
+                            return T_UNKNOWN;
+                        } else {
+                            ungetc(ch, fp);
+                            token->val.stringVal = "FALS";
+                            token->type = T_UNKNOWN;
+                            return T_UNKNOWN;
+                        }
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "FAL";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "FA";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->val.stringVal = "F";
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
+
+        case 'G':
+            if (ch = getc(fp) == 'L') {
+                if (ch = getc(fp) == 'O') {
+                    if (ch = getc(fp) == 'B') {
+                        if (ch = getc(fp) == 'A') {
+                            if (ch = getc(fp) == 'L') {
+                                token->type = T_GLOBAL;
+                                return T_GLOBAL;
+                            } else {
+                                ungetc(ch, fp);
+                                token->val.stringVal = "GLOBA";
+                                token->type = T_UNKNOWN;
+                                return T_UNKNOWN;
+                            }
+                        } else {
+                            ungetc(ch, fp);
+                            token->val.stringVal = "GLOB";
+                            token->type = T_UNKNOWN;
+                            return T_UNKNOWN;
+                        }
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "GLO";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "GL";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->val.stringVal = "G";
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
 
 
         case 'I':
@@ -279,9 +417,28 @@ static int ScanOneToken( FILE *fp, token_t *token) {
                     return T_IN;
                 }
             }
+            ungetc(ch, fp);
             token->type = T_UNKNOWN;
             token->val.stringVal = "I";
             return T_UNKNOWN;
+
+        case 'N':
+            if (ch = getc(fp) == 'O') {
+                if (ch = getc(fp) == 'T') {
+                    token->type = T_NOT;
+                    return T_NOT;
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "NO";
+                    token-type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->type = T_UNKNOWN;
+            token->val.stringVal = "N";
+            return T_UNKNOWN;
+
 
         case 'P':
             if (ch = getc(fp) == 'R') {
@@ -366,6 +523,128 @@ static int ScanOneToken( FILE *fp, token_t *token) {
             token->val.stringVal = "P";
             token->type = T_UNKNOWN;
             return T_UNKNOWN;
+
+        case 'R':
+            if (ch = getc(fp) == 'E') {
+                if (ch = getc(fp) == 'T') {
+                    if (ch = getc(fp) == 'U') {
+                        if (ch = getc(fp) == 'R') {
+                            if (ch = getc(fp) == 'N') {
+                                token->type = T_RETURN;
+                                return T_RETURN;
+                            } else {
+                                ungetc(ch, fp);
+                                token->val.stringVal = "RETUR";
+                                token->type = T_UNKNOWN;
+                                return T_UNKNOWN;
+                            }
+                        } else {
+                            ungetc(ch, fp);
+                            token->val.stringVal = "RETU";
+                            token->type = T_UNKNOWN;
+                            return T_UNKNOWN;
+                        }
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "RET";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "RE";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->stringVal = "R";
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
+
+        case 'S':
+            if (ch = getc(fp) == 'T') {
+                if (ch = getc(fp) == 'R') {
+                    if (ch = getc(fp) == 'I') {
+                        if (ch = getc(fp) == 'N') {
+                            if (ch = getc(fp) == 'G') {
+                                token->type = T_UNKNOWN;
+                                return T_UNKNOWN;
+                            } else {
+                                ungetc(ch, fp);
+                                token->val.stringVal = "STRIN";
+                                token->type = T_UNKNOWN;
+                                return T_UNKNOWN;
+                            }
+                        } else {
+                            ungetc(ch, fp);
+                            token->val.stringVal = "STRI";
+                            token->type = T_UNKNOWN;
+                            return T_UNKNOWN;
+                        }
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "STR";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "ST";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->stringVal = "S";
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
+
+        case 'T':
+            ch = getc(fp);
+            if (ch == 'H') {
+                if (ch = getch(fp) == 'E') {
+                    if (ch = getc(fp) == 'N') {
+                        token->type = T_THEN;
+                        return T_THEN;
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "THE";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "TH";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            } else if (ch == 'R') {
+                if (ch = getch(fp) == 'U') {
+                    if (ch = getch(fp) == 'E') {
+                        token->type = T_THEN;
+                        return T_THEN;
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "TRU";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "TR";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->stringVal = "T";
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
+
+
+
+
 
 
         /*    
