@@ -42,7 +42,7 @@
 #define T_GLOBAL        261
 #define T_PROCEDURE     262
 #define T_IN            263
-#define T_out           264
+#define T_OUT           264
 #define T_INOUT         265
 #define T_IF            266
 #define T_THEN          267
@@ -70,12 +70,13 @@
 // TODO function isstringval(char ch);
 // TODO function ischar(char ch);
 
-FILE myfile(*file)
+FILE * fp;
+fp = fopen(argv[1], "r");
 
 struct token_t {
     int type;
     union {
-        char    stringVal[256];
+        std::string     stringVal;
         //int     intVal;
         //double  num;
     } val;
@@ -138,7 +139,7 @@ static int ScanOneToken( FILE *fp, token_t *token) {
             // UNKNOWN type
             ungetc(nextch, fp);
             token->type = T_UNKNOWN;
-            token->val.intVal = ch;
+            token->val.stringVal = ch;
             return T_UNKNOWN;
 
         case '<':
@@ -175,50 +176,197 @@ static int ScanOneToken( FILE *fp, token_t *token) {
             // unknow operator
             ungetc(nextch, fp);
             token->type = T_UNKNOWN;
+            token->val.stringVal = ":";
             return T_UNKNOWN;
 
         case '0': case '1': case '2': case '3': case '4': case '5': case '6':
         case '7': case '8': case '9':
-            token->val.stringVal[0] = ch;
+            token->val.stringVal = ch;
             i = 1;
-            while (isdigit(ch = getc(fp))) {
-                token->val.stringVal[i] = ch;
-                i++;
+            while (isdigit(ch = getc(fp)))
+                token->val.stringVal += ch;
+
             if (ch == '_') {
                 if ( nextch=getc(fp) == '.') {
-                    token->val.stringVal[i] = ch;
-                    token->val.stringVal[i++] = nextch;
-                    i++
+                    token->val.stringVal += ch;
+                    token->val.stringVal += nextch;
                     while(isdigit(ch = getc(fp)))
                     {
-                        token->val.stringVal[i] = ch;
-                        i++;
+                        token->val.stringVal += ch;
                     }
-                    if (ch=getc(fp) == '_')
-                        token->val.stringVal[i] = ch;
-                    ungetc(ch,fp);
+                    if (ch=getc(fp) == '_') {
+                        token->val.stringVal += ch;
+                        token->type = T_DOUBLE;
+                        return T_DOUBLE;
+                    }
+                    ungetc(nextch,fp);
                     token->type = T_UNKNOWN;
                     return T_UNKNOWN;
                 }
-                else {
-                    ungetc(nextch,fp);
             }
-            ungetc(ch,fp);
-            token->type = T_NUM;
-            return T_NUM;
 
-        case 'I': case 'i':
-            ch = getc(ch);
-            if (ch == 'f' || ch == 'F') { // if
+            token->val.stringVal += ch;
+            token->type = T_INT;
+            return T_INT;
+
+
+        case 'B':
+            if (ch = getc(fp) == 'E') {
+                if (ch = getc(fp) == 'G') {
+                    if (ch = getc(fp) == 'I') {
+                        if (ch = getc(fp) == 'N') {
+                            token->type = T_BEGIN;
+                            return T_BEGIN;
+                        } else {
+                            ungetc(ch, fp);
+                            token->val.stringVal = "BEGI";
+                            token->type = T_UNKNOWN;
+                            return T_UNKNOWN;
+                        }
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "BEG";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "BE";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->val.stringVal = 'B';
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
+
+
+
+        case 'I':
+            ch = getc(fp);
+            if (ch == 'F') { // if
                 token->type = T_IF;
                 return T_IF;
-            } else if (ch == 's' || ch = 'S') { // is
+            } else if (ch == 'S') { // is
                 token->type = T_IS;
                 return T_IF;
-            } else if (ch == 'n' || ch == 'N') { // in...
-                ch = getc(ch);
-                if () 
+            } else if (ch == 'N') { // in...
+                ch = getc(fp);
+                if (ch == 'O') {
+                    if (ch = getc(fp) == 'U') {
+                        if (ch = getc(fp) == 'T') {
+                            token->type = T_INOUT;
+                            return T_INOUT;
+                        } else {
+                            ungetc(ch, fp);
+                            token->type = T_UNKNOWN;
+                            token->val.stringVal = "INOU";
+                            return T_UNKNOWN;
+                        }
+                    } else {
+                        ungetc(ch, fp);
+                        token->type = T_UNKNOWN;
+                        token->val.stringVal = "INO";
+                        return T_UNKNOWN;
+                    }
+                } else if (ch == 'T') {
+                    token->type = T_INT;
+                    return T_INT;
+                } else {
+                    ungetc(ch, fp);
+                    token->type = T_IN;
+                    return T_IN;
+                }
             }
+            token->type = T_UNKNOWN;
+            token->val.stringVal = "I";
+            return T_UNKNOWN;
+
+        case 'P':
+            if (ch = getc(fp) == 'R') {
+                if (ch = getc(fp) == 'O') {
+                    ch = getc(fp);
+                    if (ch == 'G') {
+                        if (ch = getc(fp) == 'R') {
+                            if (ch = getc(fp) == 'A') {
+                                if (ch = getc(fp) == 'M') {
+                                    token->type = T_PROGRAM;
+                                    return T_PROGRAM;
+                                } else {
+                                    ungetc(ch, fp);
+                                    token->type = T_UNKNOWN;
+                                    token->val.stringVal = "PROGRA";
+                                    return T_UNKNOWN;
+                                }
+                            } else {
+                                ungetc(ch, fp);
+                                token->type = T_UNKNOWN;
+                                token->val.stringVal = "PROGR;
+                                return T_UNKNOWN;
+                            }
+                        } else {
+                            ungetc(ch, fp);
+                            token->type = T_UNKNOWN;
+                            token->val.stringVal = "PROG";
+                            return T_UNKNOWN;
+                        }
+                    } else if (ch == 'C') {
+                        if (ch = getc(fp) == 'E') {
+                            if (ch = getc(fp) == 'D') {
+                                if (ch = getc(fp) == 'U') {
+                                    if (ch = getc(fp) == 'R') {
+                                        if (ch = getc(fp) == 'E') {
+                                            token->type = T_PROCEDURE;
+                                            return T_PROCEDURE;
+                                        } else {
+                                            ungetc(ch, fp);
+                                            token->val.stringVal = "PROCEDUR";
+                                            token->type = T_UNKNOWN;
+                                            return T_UNKNOWN;
+                                        }
+                                    } else {
+                                        ungetc(ch, fp);
+                                        token->val.stringVal = "PROCEDU";
+                                        token->type = T_UNKNOWN;
+                                        return T_UNKNOWN;
+                                    }
+                                } else {
+                                    ungetc(ch, fp);
+                                    token->val.stringVal = "PROCED";
+                                    token->type = T_UNKNOWN;
+                                    return T_UNKNOWN;
+                                }
+                            } else {
+                                ungetc(ch, fp);
+                                token->val.stringVal = "PROCE";
+                                token->type = T_UNKNOWN;
+                                return T_UNKNOWN;
+                            }
+                        } else {
+                            ungetc(ch, fp);
+                            token->val.stringVal = "PROC";
+                            token->type = T_UNKNOWN;
+                            return T_UNKNOWN;
+                        }
+                    } else {
+                        ungetc(ch, fp);
+                        token->val.stringVal = "PRO";
+                        token->type = T_UNKNOWN;
+                        return T_UNKNOWN;
+                    }
+                } else {
+                    ungetc(ch, fp);
+                    token->val.stringVal = "PR";
+                    token->type = T_UNKNOWN;
+                    return T_UNKNOWN;
+                }
+            }
+            ungetc(ch, fp);
+            token->val.stringVal = "P";
+            token->type = T_UNKNOWN;
+            return T_UNKNOWN;
+
 
         /*    
         case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
