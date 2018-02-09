@@ -70,9 +70,6 @@
 // TODO function isstringval(char ch);
 // TODO function ischar(char ch);
 
-FILE * fp;
-fp = fopen(argv[1], "r");
-
 struct token_t {
     int type;
     union {
@@ -654,9 +651,9 @@ static int ScanOneToken( FILE *fp, token_t *token) {
                     token->val.stringVal += ch;
                     continue;
                 }
-
                 break;
             }
+            ungetc(ch,fp);
             token->type = T_IDENTIFIER;
             return T_IDENTIFIER;
 
