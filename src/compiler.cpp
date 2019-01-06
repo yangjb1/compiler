@@ -1,3 +1,6 @@
+#include <iostream>
+#include <cstdio>
+#include <fstream>
 #include "scanner.hpp"
 
 int main(int argc, char** argv) {
@@ -7,9 +10,16 @@ int main(int argc, char** argv) {
         std::cout << "argc\n";
         return 0;
     }
-    fp = argv[1];
-    while (ScanOneToken(fp, token))
-        std::cout << token->type << std::endl;
+    fp = fopen(argv[1], "r+");
+
+
+    token_t token;
+    ScanOneToken(fp,token);
+    std::cout<<token.type<<','<<token.val<<','<<token.id;
+    /*
+    while (ScanOneToken(fp, token_t))
+        std::cout << token_t->type << std::endl;
+    */
 
     return 0;
 }
